@@ -1,0 +1,15 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pt
+*.pth
+*.sh
+
+.vscode/
+.idea/
+.ipynb_checkpoints/
+.pytest_cache/
+
+logs/
+data/
