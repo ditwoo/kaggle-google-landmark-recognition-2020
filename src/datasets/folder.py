@@ -15,12 +15,12 @@ class FolderDataset(Dataset):
     def __init__(
         self,
         file_ids: Sequence[str],
-        landmark_ids: Sequence[str],
+        landmark_ids: Sequence[int],
         landmark_map: Mapping[int, int],
         transforms: BasicTransform = DEFAULT_TRANSFORM,
         data_dir: Path = Path("."),
     ):
-        self.data_dir = data_dir
+        self.data_dir = Path(data_dir)
         self.file_ids = file_ids
         self.landmark_ids = landmark_ids
         self.landmark_map = landmark_map
@@ -35,6 +35,15 @@ class FolderDataset(Dataset):
 
     def __len__(self) -> int:
         return len(self.file_ids)
+
+    def targets(self) -> Sequence[int]:
+        """List of classes.
+
+        Returns:
+            List[int] with classes for each image
+            (the same order as in pair (file_id, landmark_id))
+        """
+        return [self.landmark_map[lid] for lid in self.landmark_ids]
 
     def landmark_to_vec(self, landmark_id: int) -> np.ndarray:
         vec = np.zeros(len(self.landmark_map), dtype="f")

@@ -4,6 +4,7 @@ import shutil
 from collections import OrderedDict
 from pathlib import Path
 from typing import Union, Mapping, Any, Callable
+from pprint import pprint
 
 import torch
 
@@ -123,6 +124,10 @@ def load_checkpoint(
 
     if loaded_items:
         print("<= Loaded {} from '{}'".format(", ".join(loaded_items), checkpoint_file))
+
+        if "metrics" in checkpoint:
+            print("Metrics:")
+            pprint(checkpoint["metrics"])
 
 
 def checkpoints_weight_average(*files) -> OrderedDict:
