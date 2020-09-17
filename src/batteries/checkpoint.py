@@ -125,6 +125,12 @@ def load_checkpoint(
     if loaded_items:
         print("<= Loaded {} from '{}'".format(", ".join(loaded_items), checkpoint_file))
 
+        if "stage" in checkpoint:
+            print("Stage -", checkpoint["stage"])
+
+        if "epoch" in checkpoint:
+            print("Epoch -", checkpoint["epoch"])
+
         if "metrics" in checkpoint:
             print("Metrics:")
             pprint(checkpoint["metrics"])
