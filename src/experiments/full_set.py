@@ -33,7 +33,7 @@ from src.batteries.progress import tqdm
 
 torch.autograd.set_detect_anomaly(False)
 torch.backends.cudnn.deterministic = True
-torch.backends.cudnn.benchmark = True
+torch.backends.cudnn.benchmark = False
 
 
 DEBUG = int(os.environ.get("DEBUG", -1))

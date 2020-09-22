@@ -44,6 +44,7 @@ DATA_DIR = Path(".") / "input"
 TRAIN_VALID_FILE = DATA_DIR / "train_valid.pkl"
 IMAGES_DIR = DATA_DIR / "train"
 NUM_WORKERS = 26
+IMG_SIZE = (448, 448)
 
 
 def get_class_weights():
@@ -87,14 +88,14 @@ def get_loaders(stage: str, train_bs: int = 32, valid_bs: int = 64) -> tuple:
 
     train_augs = albu.Compose(
         [
-            albu.RandomResizedCrop(336, 336, scale=(0.6, 1.0)),
+            albu.RandomResizedCrop(*IMG_SIZE, scale=(0.6, 1.0)),
             albu.HorizontalFlip(p=0.5),
             # albu.JpegCompression(p=0.5),
             albu.Normalize(),
             ToTensorV2(),
         ]
     )
-    valid_augs = albu.Compose([albu.Resize(336, 336), albu.Normalize(), ToTensorV2(),])
+    valid_augs = albu.Compose([albu.Resize(*IMG_SIZE), albu.Normalize(), ToTensorV2(),])
 
     train_set = FolderDataset(
         train["id"].values,
@@ -309,7 +310,7 @@ def experiment(logdir: Path, device: torch.device) -> None:
         EfficientNetEncoder("efficientnet-b0", EMBEDDING_SIZE, bias=False),
         CosFace(EMBEDDING_SIZE, NUM_CLASSESS, None),
     )
-    load_checkpoint("./logs/full_set3/stage_0/best.pth", model)
+    load_checkpoint("./logs/full_set4_5/stage_0/best.pth", model)
 
     # model.head.s = 64.0  # np.sqrt(2) * np.log(NUM_CLASSESS - 1)
     # model.head.m = 0.35
@@ -337,7 +338,7 @@ def experiment(logdir: Path, device: torch.device) -> None:
             save_n_best=5,
         )
 
-        train_loader, valid_loader = get_loaders(stage, train_bs=64, valid_bs=128)
+        train_loader, valid_loader = get_loaders(stage, train_bs=32, valid_bs=128)
 
         for epoch in range(1, n_epochs + 1):
             epoch_start_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -364,7 +365,7 @@ def experiment(logdir: Path, device: torch.device) -> None:
 
 
 def main() -> None:
-    experiment_name = "full_set4"
+    experiment_name = "full_set5"
     logdir = Path(".") / "logs" / experiment_name
 
     if not torch.cuda.is_available():
